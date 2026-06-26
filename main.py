@@ -1,0 +1,1 @@
+print("Color tracker project started")
