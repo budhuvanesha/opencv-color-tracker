@@ -1,8 +1,29 @@
 import cv2 
 import numpy as np
 
-cap = cv2.VideoCapture(0)
+def classify_position(center_x, center_y, width, height):
 
+    if center_x <= int((1/3)*width):
+        h_direction = "Left"
+
+    elif center_x <= int((2/3)*width):
+        h_direction = "Center"
+
+    else:
+        h_direction = "Right"
+
+    if center_y <= int((1/3)*height):
+        v_direction = "Top"
+
+    elif center_y <= int((2/3)*height):
+        v_direction = "Middle"
+
+    else:
+        v_direction = "Bottom"
+
+    return h_direction, v_direction
+
+cap = cv2.VideoCapture(0)
 
 while True:
     success, frame = cap.read()
@@ -42,26 +63,11 @@ while True:
 
             center_x = x + w // 2
             center_y = y + h // 2
+
             cv2.circle(frame, (center_x, center_y), 5, (0, 0, 255), -1)
             cv2.putText(frame, f"Coordinates: {center_x}, {center_y}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
 
-            if center_x <= left_border:
-                h_direction = "Left"
-
-            elif center_x <= right_border:
-                h_direction = "Center"
-
-            else:
-                h_direction = "Right"
-
-            if center_y <= upper_border:
-                v_direction = "Top"
-
-            elif center_y <= lower_border:
-                v_direction = "Middle"
-
-            else:
-                v_direction = "Bottom"
+            h_direction, v_direction = classify_position(center_x, center_y, width, height)
 
             cv2.putText(frame, f"{h_direction}, {v_direction}", (10, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1)
 
